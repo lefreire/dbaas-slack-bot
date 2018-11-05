@@ -18,3 +18,15 @@ class Persistence(object):
 
     def set_notified(self, task):
         self.client.set(task.id, task.__dict__, self.ttl_seconds)
+
+    def set_channel(self, channel_id, relevance_id):
+        self.client.set(relevance_id, channel_id)
+
+    def unset_channel(self, relevance_id):
+        self.client.delete(relevance_id)
+
+    def channels_for(self, relevance):
+        relevance_query = "{}_*".format(relevance)
+        keys_list = self.client.keys(relevance_query)
+        return [self.client.get(key) for key in keys_list]
+      
